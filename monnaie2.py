@@ -1,54 +1,61 @@
 def liste_des_n(monnaie):
     list = []
-    for i in range(monnaie+1):
+    for i in range(monnaie + 1):
         list.append(i)
     return list
 
 
-
-def choix_objets (monnaie, systeme, val):
-
-    DEBUG_decomposition = []
+def choix_objets(monnaie, systeme, val):
+    decomposition = []
     appoint = []
-    i=0
-    DEBUG_total=0
+    temp = []
+    monnaie_initiale = monnaie
+    total = 0
+    precision = 10
+    piece_bonus = 0
+    piece = systeme[0]
 
-    while i < len(systeme) and monnaie != 0:
-        piece = systeme[i]
+    for n in range(monnaie + 1):
+        if piece * n in val:
+            appoint.append(piece * n)
 
-        for n in range(monnaie+1):
-            if piece*n in val:
-                appoint.append(piece*n)
+    while monnaie - piece >= 0:
+        monnaie -= piece
+        decomposition.append(piece)
+        total += piece
 
-        while monnaie - piece >= 0:
-            monnaie -= piece
-            DEBUG_decomposition.append(piece)
-            DEBUG_total += piece
+    if total != monnaie_initiale and monnaie_initiale >= piece:
+        for n in appoint:
+            for j in range(precision):
+                if total + j == monnaie_initiale:
+                    n += 1
+                    temp.append(n + j - 1)
+                    piece_bonus = j
 
-        i += 1
-    print("total:" + str(DEBUG_total) + "decomposition:" + str(DEBUG_decomposition))
-    return appoint, DEBUG_total, DEBUG_decomposition
+        for k in temp:
+            appoint.append(k)
+
+        appoint.sort()
+        print("Les valeurs pour lesquelles l'appoint est possible pour " + str(len(decomposition)) + " piece(s) de " + str(systeme[0]) + " et une piece de " + str(piece_bonus) + " sont : " + str(appoint))
+
+    if total == monnaie_initiale:
+        print("Les valeurs pour lesquelles l'appoint est possible pour " + str(len(decomposition)) + " piece(s) de " + str(systeme[0]) + " sont : " + str(appoint))
+
+    return appoint, total, decomposition
+
 
 def appoint(monnaie, systeme):
     list = []
     val = liste_des_n(monnaie)
     while systeme:
         x = choix_objets(monnaie, systeme, val)
-        list.append(x[0])
-        del systeme[0]
-        """ if x[1] != 10:
-      while sum(x[2]) != 10:
-          for i in systeme:
-              x[2].append(i)
+        if x[0] != [0]:
+            list.append(x[0])
 
-          for n in range(monnaie+1):
-              for j in range(len(x[2])):
-                  if x[2][j]*n in val:
-                      x[0].append(x[2][j]*n)
-"""
+        del systeme[0]
 
     result = set(list[0])
     for s in list[1:]:
         result.intersection_update(s)
 
-    return sorted(result)
+    return "On est donc sur d'avoir l'appoint pour les prix : " + str(sorted(result))
