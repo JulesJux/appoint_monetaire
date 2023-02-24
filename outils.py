@@ -14,6 +14,9 @@ def choix_objets(monnaie, systeme, val, systeme_initial):
     temp = []
     monnaie_initiale = monnaie
     total = 0
+    j_tab = []
+    i_tab = []
+    a=0
     precision = 10
     piece_bonus = 0
     nbr_de_piece_bonus = 0
@@ -33,14 +36,18 @@ def choix_objets(monnaie, systeme, val, systeme_initial):
             for j in systeme_initial:
                 for i in range(precision):
                     if total + j * i == monnaie_initiale:
+                        if i > j:
+                            i, j = j, i
                         n += 1
                         temp.append(n + j - 1)
                         if i > 1:
                             for l in range(i):
-                                temp.append(n + l)
+                                temp.append(l)
+                                temp.append(i*j)
                         piece_bonus = j
                         nbr_de_piece_bonus = i
 
+        temp.append(monnaie_initiale)
         for k in set(temp):
             appoint.append(k)
 
@@ -48,6 +55,7 @@ def choix_objets(monnaie, systeme, val, systeme_initial):
         afficher_appoints_bonus(decomposition, systeme, nbr_de_piece_bonus, piece_bonus, appoint)
 
     if total == monnaie_initiale:
+        toto = 0
         afficher_appoints(decomposition, systeme, appoint)
 
     return appoint
